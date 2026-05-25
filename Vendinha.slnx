@@ -1,6 +1,7 @@
 <Solution>
-  <Folder Name="/Itens de Solução/">
+  <Folder Name="/Scripts/">
     <File Path="scriptdb.sql" />
   </Folder>
   <Project Path="Vendinha.Core/Vendinha.Core.csproj" />
+  <Project Path="Vendinha.Desktop/Vendinha.Desktop.csproj" Id="40be2861-2c43-48a9-9723-de332b0f72dc" />
 </Solution>
