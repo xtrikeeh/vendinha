@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
-using System.Text;
+﻿using System.ComponentModel.DataAnnotations;
 using Vendinha.Core.Data;
 using Vendinha.Core.Models;
 
@@ -22,15 +19,49 @@ namespace Vendinha.Core.Services
 
             return context.Dividas.ToList();
         }
-        public bool Criar(Divida c, out List<ValidationResult> erros)
+        public bool Criar(Divida divida, out List<ValidationResult> erros)
         {
-            if (!Validar(c, out erros))
+            using var context = new VendinhaDbContext();
+            erros = new List<ValidationResult>();
+
+            if (!Validar(divida, out erros))
             {
                 return false;
             }
 
+            if (context.Dividas.Any(divida_buscada => divida_buscada.ClienteId == divida.ClienteId && divida_buscada.Situacao == false))
+            {
+                erros.Add(new ValidationResult("Esse cliente já possui uma dívida aberta."));
+                return false;
+            }
+
+            context.Dividas.Add(divida);
+            context.SaveChanges();
+
+            return true;
+        }
+        public bool Pagar(int id, out List<ValidationResult> erros)
+        {
             using var context = new VendinhaDbContext();
-            context.Dividas.Add(c);
+
+            erros = new List<ValidationResult>();
+
+            var dividaEncontrada = context.Dividas.Find(id);
+
+            if (dividaEncontrada == null)
+            {
+                erros.Add(new ValidationResult("Não foi possível encontrar uma dívida com esse Id."));
+                return false;
+            }
+
+            dividaEncontrada.Situacao = true;
+            dividaEncontrada.DataPagamento = DateTime.UtcNow;
+
+            if (!Validar(dividaEncontrada, out erros))
+            {
+                return false;
+            }
+
             context.SaveChanges();
 
             return true;

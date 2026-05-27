@@ -17,6 +17,7 @@ while (true)
     Console.WriteLine("- 3: Excluir cliente");
     Console.WriteLine("- 4: Pesquisar cliente");
     Console.WriteLine("- 5: Atualizar dados cliente");
+    Console.WriteLine("- 6: Pagar dívida");
     Console.WriteLine("- 0: Encerrar");
     Console.Write("Opção: ");
 
@@ -186,6 +187,22 @@ while (true)
         else
         {
             Console.WriteLine("Cliente atualizado com sucesso!");
+        }
+    }
+    else if (opcao == 6)
+    {
+        Console.Write("> Digite o Id da dívida para paga-lá: ");
+        var id_divida = int.Parse(Console.ReadLine());
+
+        var resultado = dividaService.Pagar(id_divida, out _);
+
+        if (!resultado)
+        {
+            Console.WriteLine("Erro ao pagar dívida.");
+        }
+        else
+        {
+            Console.WriteLine("Dívida paga com sucesso!");
         }
     }
     else if (opcao == 10)
