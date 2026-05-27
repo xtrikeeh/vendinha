@@ -15,6 +15,8 @@ while (true)
     Console.WriteLine("- 1: Listar");
     Console.WriteLine("- 2: Criar");
     Console.WriteLine("- 3: Excluir cliente");
+    Console.WriteLine("- 4: Pesquisar cliente");
+    Console.WriteLine("- 5: Atualizar dados cliente");
     Console.WriteLine("- 0: Encerrar");
     Console.Write("Opção: ");
 
@@ -36,11 +38,10 @@ while (true)
             Console.WriteLine("--- Clientes ---");
             foreach (var cliente in clientes)
             {
-                Console.WriteLine("> Id: {0} \n  Nome: {1} \n  Idade: {2} anos \n  Status: {3} \n",
+                Console.WriteLine("> Id: {0} \n  Nome: {1} \n  Idade: {2} anos \n",
                     cliente.Id, 
                     cliente.Nome, 
-                    cliente.Idade,
-                    cliente.Status);
+                    cliente.Idade);
             }
         }
         else if (opcao_listar == 2)
@@ -86,12 +87,27 @@ while (true)
             Console.Write("> Data de Nascimento: ");
             var data_nascimento = DateOnly.Parse(Console.ReadLine());
 
-            Console.Write("> Email: ");
-            var email = Console.ReadLine();
+            Console.Write("> Deseja adicionar email para contato? (S - Sim | N - Não): ");
+            var opcao_email = Console.ReadLine();
 
-            var clientes = new Cliente() { Nome = nome, Cpf = cpf, DataNascimento = data_nascimento, Email = email, Status = true};
-            clienteService.Criar(clientes, out _);
-            Console.WriteLine("Cliente cadastrado com sucesso!");
+            string email = null;
+
+            if (opcao_email.ToLower() == "s")
+            {
+                Console.Write("> Email: ");
+                email = Console.ReadLine();
+            }
+
+            var clientes = new Cliente() { Nome = nome, Cpf = cpf, DataNascimento = data_nascimento, Email = email };
+            var resultado = clienteService.Criar(clientes, out _);
+
+            if (!resultado)
+            {
+                Console.WriteLine("Erro ao cadastrar o cliente.");
+            } else
+            {
+                Console.WriteLine("Cliente cadastrado com sucesso!");
+            }
         }
         else if (opcao_listar == 2)
         {
@@ -106,38 +122,74 @@ while (true)
                 continue;
             }
 
-            DateTime data_criacao = DateTime.UtcNow;
-
             Console.Write("> Valor: ");
             var valor = Decimal.Parse(Console.ReadLine());
 
-            Console.Write("> Situação (S - Paga / N - Não paga): ");
-            var opcao_situacao = Console.ReadLine();
+            var dividas = new Divida() { ClienteId = id_cliente , Valor = valor};
+            var resultado = dividaService.Criar(dividas, out _);
 
-            bool situacao;
-            DateTime? data_pagamento;
-
-            if (opcao_situacao == "s")
+            if (!resultado)
             {
-                situacao = true;
-                data_pagamento = DateTime.UtcNow;
+                Console.WriteLine("Erro ao cadastrar a dívida.");
             } else
             {
-                situacao = false;
-                Console.Write(" > Data de pagamento (Ex: DD/MM/AAAA HH:MM): ");
-                data_pagamento = null;
+                Console.WriteLine("Dívida cadastrada com sucesso!");
             }
-
-            var dividas = new Divida() { ClienteId = id_cliente , Valor = valor, Situacao = situacao, DataPagamento = data_pagamento, DataCriacao = data_criacao};
-            dividaService.Criar(dividas, out _);
-            Console.WriteLine("Dívida cadastrada com sucesso!");
         }
     }
     else if (opcao == 3)
     {
+        var clientes = clienteService.Listar().Where(e => e.Status == true);
+        foreach (var cliente in clientes)
+        {
+            Console.WriteLine("> Id: {0} \n  Nome: {1} \n",
+                cliente.Id,
+                cliente.Nome);
+        }
+
         Console.Write("> Digite o Id do cliente para excluí-lo: ");
         var id_cliente = int.Parse(Console.ReadLine());
 
         clienteService.Excluir(id_cliente, out _);
+    }
+    else if (opcao == 4)
+    {
+        Console.Write("> Pesquisar por nome: ");
+        var nome = Console.ReadLine();
+
+        var clienteBuscados = clienteService.Pesquisar(nome);
+
+        foreach (var cliente in clienteBuscados)
+        {
+            Console.WriteLine("> Id: {0} \n  Nome: {1} \n",
+                cliente.Id,
+                cliente.Nome);
+        }
+    }
+    else if (opcao == 5)
+    {
+        Console.Write("> Digite o Id do cliente: ");
+        var id_cliente = int.Parse(Console.ReadLine());
+
+        Console.Write("> Nome (deixe vazio caso não queira alterar): ");
+        var novo_nome = Console.ReadLine();
+
+        Console.Write("> Email (deixe vazio caso não queira alterar): ");
+        var novo_email= Console.ReadLine();
+
+        var resultado = clienteService.Atualizar(id_cliente, novo_nome, novo_email, out _);
+
+        if (!resultado)
+        {
+            Console.WriteLine("Erro ao atualizar os dados do cliente.");
+        }
+        else
+        {
+            Console.WriteLine("Cliente atualizado com sucesso!");
+        }
+    }
+    else if (opcao == 10)
+    {
+        Console.Clear();
     }
 }

@@ -8,11 +8,13 @@ namespace Vendinha.Core.Models
     public class Cliente
     {
         public int Id { get; set; }
-        [Required, StringLength(255)]
+        [Required(ErrorMessage = "O nome é obrigatório")]
+        [StringLength(100, MinimumLength = 10)]
+        [RegularExpression(@"^[A-Za-zÀ-ÿ]+(\s+[A-Za-zÀ-ÿ]+)+$", ErrorMessage = "Nome inválido")]
         public string Nome { get; set; }
-        [Required, StringLength(11, MinimumLength = 11)]
+        [Required(ErrorMessage = "O CPF é obrigatório")]
+        [RegularExpression(@"^\d{11}$", ErrorMessage = "CPF inválido")]
         public string Cpf { get; set; }
-
         public int Idade
         {
             get
@@ -28,8 +30,10 @@ namespace Vendinha.Core.Models
                 return idade;
             }
         }
+        [Required(ErrorMessage = "Data de nascimento é obrigatória")]
         public DateOnly DataNascimento { get; set; }
-        public bool Status { get; set; }
-        public string Email { get; set; }
+        public bool Status { get; set; } = true;
+        [EmailAddress]
+        public string? Email { get; set; }
     }
 }
