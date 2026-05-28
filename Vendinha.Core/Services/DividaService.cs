@@ -6,11 +6,12 @@ namespace Vendinha.Core.Services
 {
     public class DividaService
     {
-        public bool Validar(Divida a, out List<ValidationResult> erros)
+
+        public bool Validar(Divida divida, out List<ValidationResult> erros)
         {
-            var contexto = new ValidationContext(a);
+            var contexto = new ValidationContext(divida);
             erros = new List<ValidationResult>();
-            var objetoValido = Validator.TryValidateObject(a, contexto, erros, true);
+            var objetoValido = Validator.TryValidateObject(divida, contexto, erros, true);
             return objetoValido;
         }
         public List<Divida> Listar()
@@ -22,6 +23,9 @@ namespace Vendinha.Core.Services
         public bool Criar(Divida divida, out List<ValidationResult> erros)
         {
             using var context = new VendinhaDbContext();
+
+            var clienteBuscado = context.Clientes.Find(divida.ClienteId);
+
             erros = new List<ValidationResult>();
 
             if (!Validar(divida, out erros))
@@ -36,6 +40,7 @@ namespace Vendinha.Core.Services
             }
 
             context.Dividas.Add(divida);
+            
             context.SaveChanges();
 
             return true;
@@ -65,6 +70,13 @@ namespace Vendinha.Core.Services
             context.SaveChanges();
 
             return true;
+        }
+
+        public decimal TotalDivida()
+        {
+            using var context = new VendinhaDbContext();
+
+            return context.Dividas.Sum(divida => divida.Valor);
         }
     }
 }

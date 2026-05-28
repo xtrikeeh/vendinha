@@ -1,6 +1,4 @@
-﻿using Microsoft.EntityFrameworkCore;
-using System.Reflection.Metadata.Ecma335;
-using Vendinha.Core.Models;
+﻿using Vendinha.Core.Models;
 using Vendinha.Core.Services;
 
 var clienteService = new ClienteService();
@@ -36,14 +34,22 @@ while (true)
         if (opcao_listar == 1)
         {
             var clientes = clienteService.Listar();
+            var total_dividas = dividaService.TotalDivida();
+
             Console.WriteLine("--- Clientes ---");
             foreach (var cliente in clientes)
             {
-                Console.WriteLine("> Id: {0} \n  Nome: {1} \n  Idade: {2} anos \n",
+                Console.WriteLine(">  Id: {0} \n  Nome: {1} \n  Email: {2} \n  Idade: {3} anos \n  Total de dívidas registradas: R$ {4} \n",
                     cliente.Id, 
-                    cliente.Nome, 
-                    cliente.Idade);
+                    cliente.Nome,
+                    cliente.Email,
+                    cliente.Idade,
+                    cliente.TotalDividas);
             }
+
+            Console.WriteLine(">  Total de dívidas: R$ {0} \n",
+                    total_dividas
+                );
         }
         else if (opcao_listar == 2)
         {
@@ -126,8 +132,8 @@ while (true)
             Console.Write("> Valor: ");
             var valor = Decimal.Parse(Console.ReadLine());
 
-            var dividas = new Divida() { ClienteId = id_cliente , Valor = valor};
-            var resultado = dividaService.Criar(dividas, out _);
+            var divida = new Divida() { ClienteId = id_cliente , Valor = valor};
+            var resultado = dividaService.Criar(divida, out _);
 
             if (!resultado)
             {
@@ -140,7 +146,7 @@ while (true)
     }
     else if (opcao == 3)
     {
-        var clientes = clienteService.Listar().Where(e => e.Status == true);
+        var clientes = clienteService.Listar();
         foreach (var cliente in clientes)
         {
             Console.WriteLine("> Id: {0} \n  Nome: {1} \n",

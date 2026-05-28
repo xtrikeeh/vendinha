@@ -1,7 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
-using System.Text;
+﻿using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Vendinha.Core.Models
 {
@@ -15,11 +13,15 @@ namespace Vendinha.Core.Models
         [Required(ErrorMessage = "O CPF é obrigatório")]
         [RegularExpression(@"^\d{11}$", ErrorMessage = "CPF inválido")]
         public string Cpf { get; set; }
+        [Required(ErrorMessage = "Data de nascimento é obrigatória")]
+        public DateOnly DataNascimento { get; set; }
+        [NotMapped]
         public int Idade
         {
             get
             {
                 var hoje = DateOnly.FromDateTime(DateTime.Today);
+
                 int idade = hoje.Year - DataNascimento.Year;
 
                 if (hoje < DataNascimento.AddYears(idade))
@@ -30,8 +32,6 @@ namespace Vendinha.Core.Models
                 return idade;
             }
         }
-        [Required(ErrorMessage = "Data de nascimento é obrigatória")]
-        public DateOnly DataNascimento { get; set; }
         public bool Status { get; set; } = true;
         [EmailAddress]
         public string? Email { get; set; }

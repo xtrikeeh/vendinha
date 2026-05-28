@@ -1,5 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using Vendinha.Core.Data;
+using Vendinha.Core.DTOs;
 using Vendinha.Core.Models;
 
 namespace Vendinha.Core.Services
@@ -29,11 +30,26 @@ namespace Vendinha.Core.Services
 
             return true;
         }
-        public List<Cliente> Listar(int pagina = 1, int quantidadeRegistros = 10)
+        public List<ClienteListagemDto> Listar(int pagina = 1, int quantidadeRegistros = 10)
         {
             using var context = new VendinhaDbContext();
             var intervalo = (pagina- 1) * quantidadeRegistros;
-            return context.Clientes.Where(cliente => cliente.Status == true).Skip(intervalo).Take(quantidadeRegistros).ToList();
+
+            return context.Clientes
+                .Where(cliente => cliente.Status == true)
+                .Skip(intervalo)
+                .Take(quantidadeRegistros)
+                .Select(cliente => new ClienteListagemDto
+                {
+                    Id = cliente.Id,
+                    Nome = cliente.Nome,
+                    Email = cliente.Email,
+                    Idade = cliente.Idade,
+                    TotalDividas = context.Dividas
+                        .Where(divida => divida.ClienteId == cliente.Id)
+                        .Sum(divida => divida.Valor)
+                }).OrderByDescending(cliente => cliente.TotalDividas)
+                .ToList();
         }
         public bool Criar(Cliente cliente, out List<ValidationResult> erros)
         {
@@ -83,7 +99,7 @@ namespace Vendinha.Core.Services
 
             return true;
         }
-        public bool Atualizar(int id, string nome, string email, out List<ValidationResult> erros)
+        public bool Atualizar(int id, string? nome, string? email, out List<ValidationResult> erros)
         {
             using var context = new VendinhaDbContext();
 

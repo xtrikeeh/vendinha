@@ -28,7 +28,7 @@ namespace Vendinha.Core.Data
             modelCliente.Property(e => e.Nome).HasColumnName("nome");
             modelCliente.Property(e => e.Cpf).HasColumnName("cpf");
             modelCliente.Property(e => e.DataNascimento).HasColumnName("data_nascimento");
-            modelCliente.Property(e => e.Status).HasColumnName("status")    ;
+            modelCliente.Property(e => e.Status).HasColumnName("status");
             modelCliente.Property(e => e.Email).HasColumnName("email");
 
             modelCliente.HasKey(e => e.Id);
