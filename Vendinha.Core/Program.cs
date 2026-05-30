@@ -6,6 +6,10 @@ var dividaService = new DividaService();
 
 while (true)
 {
+    Console.Write("Aperte qualquer tecla... ");
+    Console.ReadKey();
+    Console.Clear();
+
     Environment.SetEnvironmentVariable("ConnectionStrings__DefaultConnection",
         "Server=localhost;Port=5432;User Id=postgres;Password=bmols123;Database=vendinha");
 
@@ -23,7 +27,7 @@ while (true)
 
     if (opcao == 0)
     {
-        Console.WriteLine("--- Programa encerrado ---");
+        Console.WriteLine("\n--- Programa encerrado ---");
         return 0;
     }
     else if (opcao == 1)
@@ -39,7 +43,7 @@ while (true)
             Console.WriteLine("--- Clientes ---");
             foreach (var cliente in clientes)
             {
-                Console.WriteLine(">  Id: {0} \n  Nome: {1} \n  Email: {2} \n  Idade: {3} anos \n  Total de dívidas registradas: R$ {4} \n",
+                Console.WriteLine("> Id: {0} \n  Nome: {1} \n  Email: {2} \n  Idade: {3} anos \n  Total de dívidas registradas: R$ {4} \n",
                     cliente.Id, 
                     cliente.Nome,
                     cliente.Email,
@@ -47,13 +51,16 @@ while (true)
                     cliente.TotalDividas);
             }
 
-            Console.WriteLine(">  Total de dívidas: R$ {0} \n",
+            Console.WriteLine("> Total de dívidas: R$ {0} \n",
                     total_dividas
                 );
         }
         else if (opcao_listar == 2)
         {
-            var dividas = dividaService.Listar();
+            Console.Write("Digite CPF do cliente para buscar suas dívidas: ");
+            var id_cliente = int.Parse(Console.ReadLine());
+
+            var dividas = dividaService.Listar(id_cliente);
             Console.WriteLine("--- Dívidas ---");
             foreach (var divida in dividas)
             {
@@ -110,22 +117,22 @@ while (true)
 
             if (!resultado)
             {
-                Console.WriteLine("Erro ao cadastrar o cliente.");
+                Console.WriteLine("Erro ao cadastrar o cliente. \n");
             } else
             {
-                Console.WriteLine("Cliente cadastrado com sucesso!");
+                Console.WriteLine("Cliente cadastrado com sucesso! \n");
             }
         }
         else if (opcao_listar == 2)
         {
-            Console.Write("> Id do Cliente: ");
+            Console.Write("> CPF ou Id do Cliente: ");
             var id_cliente = int.Parse(Console.ReadLine());
 
             var clienteExistente = clienteService.Listar().FirstOrDefault(c => c.Id == id_cliente);
 
             if (clienteExistente == null)
             {
-                Console.WriteLine("Erro: cliente não encontrado!");
+                Console.WriteLine("Erro: cliente não encontrado! \n");
                 continue;
             }
 
@@ -137,10 +144,10 @@ while (true)
 
             if (!resultado)
             {
-                Console.WriteLine("Erro ao cadastrar a dívida.");
+                Console.WriteLine("Erro ao cadastrar a dívida. \n");
             } else
             {
-                Console.WriteLine("Dívida cadastrada com sucesso!");
+                Console.WriteLine("Dívida cadastrada com sucesso! \n");
             }
         }
     }
@@ -157,7 +164,16 @@ while (true)
         Console.Write("> Digite o Id do cliente para excluí-lo: ");
         var id_cliente = int.Parse(Console.ReadLine());
 
-        clienteService.Excluir(id_cliente, out _);
+        var resultado = clienteService.Excluir(id_cliente, out _);
+
+        if (!resultado)
+        {
+            Console.WriteLine("Erro ao excluir o cliente. \n");
+        }
+        else
+        {
+            Console.WriteLine("Cliente excluído com sucesso! \n");
+        }
     }
     else if (opcao == 4)
     {
@@ -188,11 +204,11 @@ while (true)
 
         if (!resultado)
         {
-            Console.WriteLine("Erro ao atualizar os dados do cliente.");
+            Console.WriteLine("Erro ao atualizar os dados do cliente. \n");
         }
         else
         {
-            Console.WriteLine("Cliente atualizado com sucesso!");
+            Console.WriteLine("Cliente atualizado com sucesso! \n");
         }
     }
     else if (opcao == 6)
@@ -204,15 +220,15 @@ while (true)
 
         if (!resultado)
         {
-            Console.WriteLine("Erro ao pagar dívida.");
+            Console.WriteLine("Erro ao pagar dívida. \n");
         }
         else
         {
-            Console.WriteLine("Dívida paga com sucesso!");
+            Console.WriteLine("Dívida paga com sucesso! \n");
         }
     }
-    else if (opcao == 10)
+    else
     {
-        Console.Clear();
+        Console.WriteLine("Opção inválida. \n");
     }
 }

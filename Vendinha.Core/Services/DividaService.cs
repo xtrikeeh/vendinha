@@ -6,7 +6,6 @@ namespace Vendinha.Core.Services
 {
     public class DividaService
     {
-
         public bool Validar(Divida divida, out List<ValidationResult> erros)
         {
             var contexto = new ValidationContext(divida);
@@ -14,17 +13,27 @@ namespace Vendinha.Core.Services
             var objetoValido = Validator.TryValidateObject(divida, contexto, erros, true);
             return objetoValido;
         }
-        public List<Divida> Listar()
+
+        public List<Divida> Listar(int? clienteId = null)
         {
             using var context = new VendinhaDbContext();
 
-            return context.Dividas.ToList();
+            var busca = context.Dividas.AsQueryable();
+
+            if (clienteId.HasValue)
+            {
+                busca = busca.Where(divida => divida.ClienteId == clienteId.Value);
+            }
+
+            return busca
+                .OrderBy(divida => divida.Situacao)
+                .ThenByDescending(divida => divida.DataCriacao)
+                .ToList();
         }
+
         public bool Criar(Divida divida, out List<ValidationResult> erros)
         {
             using var context = new VendinhaDbContext();
-
-            var clienteBuscado = context.Clientes.Find(divida.ClienteId);
 
             erros = new List<ValidationResult>();
 
@@ -59,6 +68,12 @@ namespace Vendinha.Core.Services
                 return false;
             }
 
+            if (dividaEncontrada.Situacao == true)
+            {
+                erros.Add(new ValidationResult("Esta dívida já está paga."));
+                return false;
+            }
+
             dividaEncontrada.Situacao = true;
             dividaEncontrada.DataPagamento = DateTime.UtcNow;
 
@@ -71,7 +86,6 @@ namespace Vendinha.Core.Services
 
             return true;
         }
-
         public decimal TotalDivida()
         {
             using var context = new VendinhaDbContext();

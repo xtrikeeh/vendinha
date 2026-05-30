@@ -1,17 +1,19 @@
+using System;
+using System.Windows.Forms;
+using Vendinha.Desktop.Screens;
+
 namespace Vendinha.Desktop
 {
     internal static class Program
     {
-        /// <summary>
-        ///  The main entry point for the application.
-        /// </summary>
         [STAThread]
         static void Main()
         {
-            // To customize application configuration such as set high DPI settings or default font,
-            // see https://aka.ms/applicationconfiguration.
+            Environment.SetEnvironmentVariable("ConnectionStrings__DefaultConnection",
+                "Server=localhost;Port=5432;User Id=postgres;Password=bmols123;Database=vendinha");
+
             ApplicationConfiguration.Initialize();
-            Application.Run(new Form1());
+            Application.Run(new Dashboard());
         }
     }
 }
