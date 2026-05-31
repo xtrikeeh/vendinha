@@ -43,7 +43,7 @@ Antes de tudo, você precisará ter instalado:
 
 1. **Criar Banco de Dados no DBeaver:**
    
-   Abra o DBeaver, clique em _Editor SQL -> Novo script SQL_, em seguida copie e cole o código do arquivo `scriptdb.sql` localizado dentro da solução.
+   Após criar uma nova conexão com o PostgreSQL no DBeaver, no menu lateral esquerdo da página principal, clique na seta na esquerda da conexão `postgres`, em seguida clique com o botão direito do mouse e vá em `Criar novo banco de dados`, dê o nome a ele de `vendinha`. Após isso, com o banco criado, pressione com o botão direito em cima do mesmo, e vá em `Definir como padrão`, depois com o direito denovo, _Editor SQL -> Novo script SQL_. Em seguida, copie e cole o código do arquivo `scriptdb.sql` localizado dentro da solução.
 
 3. **Configurar a String de Conexão(Connection String):**
    
