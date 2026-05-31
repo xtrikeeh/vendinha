@@ -1,11 +1,3 @@
--- Script para criar banco de dados para o projeto Vendinha.
-
--- Se já há um banco de dados com o nome 'vendinha', rode este comando, ele o apagará.
-drop database if exists vendinha;
-
--- Cria o banco de dados 'vendinha'
-create database vendinha;
-
 -- Cria table 'clientes'
 create table clientes(
 	id serial not null,
