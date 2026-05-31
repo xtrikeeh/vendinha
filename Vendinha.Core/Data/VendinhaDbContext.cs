@@ -14,7 +14,7 @@ namespace Vendinha.Core.Data
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
-            optionsBuilder.UseNpgsql(Environment.GetEnvironmentVariable("ConnectionStrings__DefaultConnection"));
+            optionsBuilder.UseNpgsql("Server=localhost;Port=5432;User Id=postgres;Password=senha;Database=vendinha");
             base.OnConfiguring(optionsBuilder);
         }
 

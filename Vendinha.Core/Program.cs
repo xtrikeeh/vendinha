@@ -10,9 +10,6 @@ while (true)
     Console.ReadKey();
     Console.Clear();
 
-    Environment.SetEnvironmentVariable("ConnectionStrings__DefaultConnection",
-        "Server=localhost;Port=5432;User Id=postgres;Password=bmols123;Database=vendinha");
-
     Console.WriteLine("Digite uma opção");
     Console.WriteLine("- 1: Listar");
     Console.WriteLine("- 2: Criar");
