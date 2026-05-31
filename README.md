@@ -49,6 +49,10 @@ Antes de tudo, você precisará ter instalado:
    
    Abra o arquivo `VendinhaDbContext.cs` e altere a string de conexão para apontar corretamente ao seu banco de dados.
 
+   Ache esse código, possivelmente na linha 17 do `VendinhaDbContext.cs`:
+
+   `optionsBuilder.UseNpgsql("Server=localhost;Port=5432;User Id=postgres;Password=senha;Database=vendinha");` 
+
 2. **Instalar Dependências do Projeto:**
    
    Visual Studio: projeto instala todas as depêndencias necessárias ao abrir o projeto.
