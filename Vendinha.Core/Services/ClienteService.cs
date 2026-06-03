@@ -49,7 +49,6 @@ namespace Vendinha.Core.Services
                         .Sum() ?? 0
                 })
                 .OrderByDescending(cliente => cliente.TotalDividas)
-                // 3º CRITÉRIO DE DESEMPATE: Se a dívida for igual (ex: R$ 0,00), ordena por ID para o cliente não sumir
                 .ThenBy(cliente => cliente.Id)
                 .Skip(intervalo)
                 .Take(quantidadeRegistros)
